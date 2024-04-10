@@ -1,4 +1,3 @@
-use gloo_console::log;
 use wasm_bindgen::JsCast;
 use web_sys::{DomRect, HtmlImageElement};
 use yew::prelude::*;
@@ -14,6 +13,18 @@ pub struct ImageProps {
     pub height: i16,
 }
 
+///
+/// Component that renders the image
+///
+/// This component has 2 stages, in the first stage the image is added to the document with a class 'image' that
+/// constrains the size of the image, and an onload handler.
+///
+/// Once the image is loaded, the onload handler dispatches the dimensions of the image to the store where the width and
+/// the height of the image are stored. This triggers a rerender and then the component enters its 2nd stage where it
+/// is rendered with a fixed size and mouse handlers.
+///
+/// In this 2nd stage the image can be dragged around, resized and removed.
+///
 #[function_component(ScalableImage)]
 pub fn scalable_image(
     ImageProps {

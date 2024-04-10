@@ -16,6 +16,14 @@ pub struct HandleProps {
     pub y: i16,
 }
 
+///
+/// This component renders a resize handle. Every image has 8 resize handles.
+///
+/// The component has a pointer down event listener that stores the active handle in the store.
+///
+/// Once the store is updated, the handle renders again to set the cursor in the style attribute to `inherit`. This is done
+/// because once a resize handle is active, the cursor changes to match the resize direction on document level.
+///
 #[function_component(Handle)]
 pub fn handle(HandleProps { image_id, id, x, y }: &HandleProps) -> Html {
     let (state, dispatch) = use_store::<AppState>();

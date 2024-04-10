@@ -1,3 +1,7 @@
+//! # Yew Image Drop
+//!
+//! Simple app that allows you to drag and drop images onto the html page and position and scale them.
+
 use crate::app_state::{AppState, Msg};
 use crate::drag_and_drop::UseDrop;
 use crate::image_container::ImageContainer;
@@ -17,6 +21,10 @@ mod logger;
 mod position;
 mod scalable_image;
 
+///
+/// 1. Register user input event listener that need to be handled on document level (mouseup, mousemove, keydown, keyup)
+/// 2. Render container div that holds the Yew app
+///
 #[function_component(App)]
 fn app() -> Html {
     let (state, dispatch) = use_store::<AppState>();
@@ -78,6 +86,7 @@ fn app() -> Html {
         });
     }
 
+    // If the user drags a resize handle show the cursor that matches the resize direction
     let style = if let Some(handle) = state.active_handle.clone() {
         let cursor = handle.get_cursor();
         "cursor:".to_string() + &cursor + ";"

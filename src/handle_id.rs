@@ -1,4 +1,3 @@
-use gloo_console::log;
 use std::fmt;
 use yew::{html, virtual_dom::VNode, Html};
 
@@ -6,6 +5,14 @@ use crate::{bounding_box::BoundingBox, handle::Handle, position::Position};
 
 const HANDLE_SIZE: i16 = 10;
 
+///
+/// This enum contains all resize handles for all 8 directions.
+///
+/// Implements the following functions:
+/// - `to_string`&rarr; prints out a snake case id that can be used for the `id` attribute of the handle div
+/// - `get_position`&rarr; returns the position where the handle should be rendered on the image
+/// - `get_cursor`&rarr; returns the matching css style cursor type, based on the resize direction
+///
 #[derive(Clone, PartialEq)]
 pub enum HandleId {
     TopLeft,
@@ -18,6 +25,7 @@ pub enum HandleId {
     MidTop,
 }
 
+/// prints out a snake case id that can be used for the `id` attribute of the handle div
 impl fmt::Display for HandleId {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let id = match &self {

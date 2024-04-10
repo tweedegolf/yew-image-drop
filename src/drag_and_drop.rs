@@ -5,6 +5,11 @@ use yewdux::use_store;
 
 use crate::app_state::{AppState, Msg};
 
+///
+/// Drag and drop component. The whole document is a drop area.
+///
+/// For more documentation see [yew_hooks](https://docs.rs/yew-hooks/latest/yew_hooks/struct.UseDropHandle.html)
+///
 #[function_component(UseDrop)]
 pub fn drop() -> Html {
     let node: NodeRef = use_node_ref();
