@@ -1,0 +1,67 @@
+        Callback::from(move |e: MouseEvent| {
+            let x = e.client_x() as i16;
+            let y = e.client_y() as i16;
+            if let Some(a) = mouse_down.anchor {
+                if let Some(id) = &mouse_down.handle_id {
+                    // log!("handle", id);
+                    if id == "br" {
+                        image_dimensions.set(Dimensions {
+                            width: x - image_position.x + a.x,
+                            height: y - image_position.y + a.y,
+                        });
+                    } else if id == "bl" {
+                        image_dimensions.set(Dimensions {
+                            width: lock.width + (lock.x - x),
+                            height: y - image_position.y + a.y,
+                        });
+                        image_position.set(Point {
+                            x: x - a.x,
+                            y: image_position.y,
+                        });
+                    } else if id == "tl" {
+                        image_dimensions.set(Dimensions {
+                            width: lock.width + (lock.x - x),
+                            height: lock.height + (lock.y - y),
+                        });
+                        image_position.set(Point {
+                            x: x - a.x,
+                            y: y - a.y,
+                        });
+                    } else if id == "tr" {
+                        image_dimensions.set(Dimensions {
+                            width: x - image_position.x + a.x,
+                            height: lock.height + (lock.y - y),
+                        });
+                        image_position.set(Point {
+                            x: image_position.x,
+                            y: y - a.y,
+                        });
+                    } else if id == "tm" {
+                        image_dimensions.set(Dimensions {
+                            width: image_dimensions.width,
+                            height: lock.height + (lock.y - y),
+                        });
+                        image_position.set(Point {
+                            x: image_position.x,
+                            y: y - a.y,
+                        });
+                    } else if id == "bm" {
+                        image_dimensions.set(Dimensions {
+                            width: image_dimensions.width,
+                            height: y - image_position.y + a.y,
+                        });
+                    } else if id == "lm" {
+                        image_dimensions.set(Dimensions {
+                            width: lock.width + (lock.x - x),
+                            height: image_dimensions.height,
+                        });
+                        image_position.set(Point {
+                            x: x - a.x,
+                            y: image_position.y,
+                        });
+                    } else if id == "rm" {
+                        image_dimensions.set(Dimensions {
+                            width: x - image_position.x + a.x,
+                            height: image_dimensions.height,
+                        });
+                    }
