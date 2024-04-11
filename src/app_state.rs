@@ -17,6 +17,7 @@ pub struct ImageData {
     pub width: i16,
     pub height: i16,
     pub ratio_wh: f32,
+    pub z_index: i16,
 }
 /// - `active_handle`&rarr; Is set as soon as the user clicks on a resize handle
 /// - `active_image_index`&rarr; Is set as soon as the user clicks on an image or when the user clicks on a resize handle of that image
@@ -30,6 +31,7 @@ pub struct AppState {
     pub active_image_index: Option<usize>,
     pub ctrl_key_down: bool,
     pub shift_key_down: bool,
+    pub next_z_index: i16,
 }
 
 #[derive(Clone, Default)]
@@ -43,6 +45,7 @@ pub enum Msg {
     MouseUp,
     CtrlKeyDown(bool),
     ShiftKeyDown(bool),
+    ImageToFront,
     #[default]
     None,
 }
@@ -109,6 +112,8 @@ impl Reducer<AppState> for Msg {
                 }
             }
             Msg::AddImage(url) => {
+                let z_index = state.next_z_index + 1;
+                state.next_z_index = z_index;
                 let new_image = ImageData {
                     id: index.to_string(),
                     url: url.clone(),
@@ -119,6 +124,7 @@ impl Reducer<AppState> for Msg {
                     width: 0,
                     height: 0,
                     ratio_wh: 0.0,
+                    z_index,
                 };
                 state.images.push(new_image);
                 let length = state.images.len();
@@ -147,6 +153,14 @@ impl Reducer<AppState> for Msg {
                     state.images.remove(i);
                     state.active_image_index = None;
                     // log!("Msg::RemoveImage", i);
+                }
+            }
+            Msg::ImageToFront => {
+                if let Some(i) = state.active_image_index {
+                    let z_index = state.next_z_index + 1;
+                    state.next_z_index = z_index;
+                    state.images[i].z_index = z_index;
+                    // log!("Msg::ImageToFront", z_index);
                 }
             }
             Msg::CtrlKeyDown(flag) => {

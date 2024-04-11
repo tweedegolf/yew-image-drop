@@ -9,6 +9,7 @@ pub struct AbsoluteStyle {
     pub y: i16,
     pub width: Option<i16>,
     pub height: Option<i16>,
+    pub z_index: Option<i16>,
 }
 
 impl fmt::Display for AbsoluteStyle {
@@ -21,6 +22,9 @@ impl fmt::Display for AbsoluteStyle {
         }
         if let Some(height) = &self.height {
             style = style + "height:" + &height.to_string() + "px;"
+        }
+        if let Some(z_index) = &self.z_index {
+            style = style + "z-index:" + &z_index.to_string() + ";"
         }
         write!(f, "{}", style)
     }

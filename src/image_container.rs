@@ -29,6 +29,7 @@ pub fn image(ImageContainerProps { id, url }: &ImageContainerProps) -> Html {
         y: state.images[index].y,
         width: Some(width),
         height: Some(height),
+        z_index: Some(state.images[index].z_index),
     }
     .to_string();
 

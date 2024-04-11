@@ -6,6 +6,7 @@ use crate::app_state::{AppState, Msg};
 use crate::drag_and_drop::UseDrop;
 use crate::image_container::ImageContainer;
 use crate::logger::Logger;
+use gloo_console::log;
 use yew::prelude::*;
 use yew_hooks::use_event_with_window;
 use yewdux::use_store;
@@ -63,6 +64,8 @@ fn app() -> Html {
         use_event_with_window("keypress", move |e: KeyboardEvent| {
             let msg = if KeyboardEvent::key(&e) == "Delete" {
                 Msg::RemoveImage(None)
+            } else if KeyboardEvent::key(&e) == "z" {
+                Msg::ImageToFront
             } else {
                 Default::default()
             };
