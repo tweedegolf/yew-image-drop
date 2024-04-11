@@ -1231,19 +1231,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "yew-drop"
-version = "0.1.0"
-dependencies = [
- "gloo-console 0.3.0",
- "unique_id",
- "wasm-bindgen",
- "web-sys",
- "yew",
- "yew-hooks",
- "yewdux",
-]
-
-[[package]]
 name = "yew-hooks"
 version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1257,6 +1244,19 @@ dependencies = [
  "wasm-bindgen-futures",
  "web-sys",
  "yew",
+]
+
+[[package]]
+name = "yew-image-drop"
+version = "0.1.0"
+dependencies = [
+ "gloo-console 0.3.0",
+ "unique_id",
+ "wasm-bindgen",
+ "web-sys",
+ "yew",
+ "yew-hooks",
+ "yewdux",
 ]
 
 [[package]]
