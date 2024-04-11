@@ -1,10 +1,9 @@
 use std::fmt;
-///
-/// Struct that stores the bounding box of the image. The term isn't completely correct because it only stored
+
+/// Struct that stores the bounding box of the image. The term isn't completely correct because it only stores
 /// x, y, width and height.
 ///
-/// Used to store the position and the dimensions of the images
-///
+/// Used to store the position and the dimensions of the images.
 #[derive(Default, Clone, Copy, PartialEq)]
 pub struct BoundingBox {
     pub x: i16,

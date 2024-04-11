@@ -5,14 +5,15 @@ use crate::{bounding_box::BoundingBox, handle::Handle, position::Position};
 
 const HANDLE_SIZE: i16 = 10;
 
-///
 /// This enum contains all resize handles for all 8 directions.
 ///
 /// Implements the following functions:
 /// - `to_string`&rarr; prints out a snake case id that can be used for the `id` attribute of the handle div
 /// - `get_position`&rarr; returns the position where the handle should be rendered on the image
 /// - `get_cursor`&rarr; returns the matching css style cursor type, based on the resize direction
-///
+/// - `get_bounding_box`&rarr; returns the x- and y-coordinate and the width and the height of the image container based on the new position of the handle
+/// - `into_iter`&rarr; turns the enum into an iterable
+/// - `get_html`&rarr; returns a html fragment that contains all 8 resize handles at their proper positions
 #[derive(Clone, PartialEq)]
 pub enum HandleId {
     TopLeft,
@@ -44,6 +45,7 @@ impl fmt::Display for HandleId {
 }
 
 impl HandleId {
+    /// returns the position where the handle should be rendered on the image
     pub fn get_position(&self, width: i16, height: i16) -> (String, i16, i16) {
         match &self {
             Self::TopLeft => ("top_left".to_string(), 0, 0),
@@ -69,6 +71,7 @@ impl HandleId {
         }
     }
 
+    /// returns the matching css style cursor type, based on the resize direction
     pub fn get_cursor(&self) -> String {
         match &self {
             Self::TopLeft => "nw-resize",
@@ -83,6 +86,8 @@ impl HandleId {
         .to_string()
     }
 
+    /// returns the x- and y-coordinate and the width and the height of the image container
+    /// based on the new position of the handle
     pub fn calculate_bounding_box(
         &self,
         img: BoundingBox,
@@ -257,6 +262,7 @@ impl HandleId {
         }
     }
 
+    /// Turns the enum into an iterable
     pub fn into_iter() -> core::array::IntoIter<HandleId, 8> {
         [
             HandleId::TopLeft,
@@ -271,7 +277,8 @@ impl HandleId {
         .into_iter()
     }
 
-    pub fn get_handles(width: i16, height: i16, image_id: String) -> VNode {
+    /// Returns a html fragment that contains all 8 resize handles at their proper positions
+    pub fn get_html(width: i16, height: i16, image_id: String) -> VNode {
         html! {
           <>
             {

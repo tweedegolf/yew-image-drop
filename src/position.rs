@@ -1,8 +1,7 @@
 use std::fmt;
-///
+
 /// Struct that stores a position. Used to store the mouse position and the position of the
 /// images that are dropped onto the page
-///
 #[derive(Default, Clone, Copy, PartialEq)]
 pub struct Position {
     pub x: i16,

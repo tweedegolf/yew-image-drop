@@ -1,10 +1,8 @@
 use std::fmt;
 
-///
 /// Struct that stores the absolute position and optionally the dimensions of a html element.
 ///
-/// The `to_string` function prints out a css style string that can be set as the `style` attribute of a html element
-///
+/// The `to_string` function prints out a css style string that can be set as the `style` attribute of a html element.
 #[derive(Default)]
 pub struct AbsoluteStyle {
     pub x: i16,

@@ -5,6 +5,9 @@ use yewdux::{Reducer, Store};
 
 use crate::{bounding_box::BoundingBox, handle_id::HandleId, position::Position};
 
+/// - `anchor`&rarr; The position of the mouse down event relative to the image. In other words the offset of the mouse position.
+/// - `lock`&rarr; When an image is being dragged around, the original position is stored.
+/// The original position is used to calculate the offset to the new position
 #[derive(Default, Clone, PartialEq, Store)]
 pub struct ImageData {
     pub id: String,
@@ -15,11 +18,8 @@ pub struct ImageData {
     pub height: i16,
     pub ratio_wh: f32,
 }
-///
-/// `anchor`&rarr; The position of the mouse down event relative to the image. In other words the offset of the mouse position.
-///
-/// `lock`&rarr; When an image is being dragged around, the original position is stored.
-/// The original position is used to calculate the offset to the new position
+/// - `active_handle`&rarr; Is set as soon as the user clicks on a resize handle
+/// - `active_image_index`&rarr; Is set as soon as the user clicks on an image or when the user clicks on a resize handle of that image
 #[derive(Default, Clone, PartialEq, Store)]
 pub struct AppState {
     pub images: Vec<ImageData>,
@@ -112,8 +112,8 @@ impl Reducer<AppState> for Msg {
                 let new_image = ImageData {
                     id: index.to_string(),
                     url: url.clone(),
-                    // x: state.mouse_x,
-                    // y: state.mouse_y,
+                    // x: state.mouse.x,
+                    // y: state.mouse.y,
                     x: 50,
                     y: 50,
                     width: 0,

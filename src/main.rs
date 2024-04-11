@@ -21,10 +21,8 @@ mod logger;
 mod position;
 mod scalable_image;
 
-///
-/// 1. Register user input event listener that need to be handled on document level (mouseup, mousemove, keydown, keyup)
-/// 2. Render container div that holds the Yew app
-///
+/// 1. Registers user input event listener that need to be handled on document level (mouseup, mousemove, keydown, keyup)
+/// 2. Renders container div that holds the Yew app
 #[function_component(App)]
 fn app() -> Html {
     let (state, dispatch) = use_store::<AppState>();

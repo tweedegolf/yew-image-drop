@@ -12,13 +12,11 @@ pub struct ImageContainerProps {
     pub url: String,
 }
 
-///
 /// Renders a container for the image and the resize handles
 ///
-/// When the user drags the resize handles the new dimensions of the container are calculated and stored in
-/// the store. As soon as the store is updated the container renders again and passes the new dimensions on
+/// When the user drags a resize handle the new dimensions of the container are calculated and stored in
+/// the store. As soon as the store is updated the container renders again and passes on the new dimensions
 /// to the ScalableImage component.
-///
 #[function_component(ImageContainer)]
 pub fn image(ImageContainerProps { id, url }: &ImageContainerProps) -> Html {
     let (state, _dispatch) = use_store::<AppState>();
@@ -45,7 +43,7 @@ pub fn image(ImageContainerProps { id, url }: &ImageContainerProps) -> Html {
           width={width}
           height={height}
         />
-        {HandleId::get_handles(width, height, id.to_string())}
+        {HandleId::get_html(width, height, id.to_string())}
       </div>
     }
 }
