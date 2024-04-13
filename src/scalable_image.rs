@@ -1,5 +1,6 @@
-use wasm_bindgen::JsCast;
-use web_sys::{DomRect, HtmlImageElement};
+use gloo_console::log;
+use wasm_bindgen::{JsCast, JsValue};
+use web_sys::{CanvasRenderingContext2d, DomRect, HtmlCanvasElement, HtmlImageElement};
 use yew::prelude::*;
 use yewdux::use_store;
 
@@ -31,6 +32,8 @@ pub fn scalable_image(
     }: &ImageProps,
 ) -> Html {
     let (_state, dispatch) = use_store::<AppState>();
+    let image_ref = use_node_ref();
+    let canvas_ref = use_node_ref();
 
     let on_load = {
         let id2 = id.to_owned();
@@ -62,20 +65,68 @@ pub fn scalable_image(
         })
     };
 
+    let i_ref = image_ref.clone();
+    let c_ref = canvas_ref.clone();
+    let dim = (*width, *height);
+    use_effect_with(dim, move |_| {
+        if let Some(canvas) = c_ref.cast::<HtmlCanvasElement>() {
+            match canvas
+                .get_context("2d")
+                .unwrap()
+                .unwrap()
+                .dyn_into::<CanvasRenderingContext2d>()
+            {
+                Ok(ctx) => {
+                    let img = i_ref.cast::<HtmlImageElement>().unwrap();
+                    ctx.set_fill_style(&JsValue::from_str("green"));
+                    // ctx.fill_rect(0., 0., dim.0 as f64, dim.1 as f64);
+
+                    match ctx.draw_image_with_html_image_element_and_sw_and_sh_and_dx_and_dy_and_dw_and_dh(
+                      &img, 
+                      0.,
+                      0.,
+                      dim.0 as f64, 
+                      dim.1 as f64,
+                      0.,
+                      0.,
+                      dim.0 as f64, 
+                      dim.1 as f64
+                    ) {
+                        Ok(_) => (),
+                        Err(e) => {
+                            log!("error draw image", e)
+                        }
+                    }
+                }
+                Err(e) => {
+                    log!("error get context", e);
+                }
+            }
+        }
+    });
+
     // log!("--->", *width, *height);
     if *width == 0 && *height == 0 {
         html! {
           <img src={url.to_string()} class="image" onload={on_load}/>
         }
     } else {
-        html! {
-          <img
-            src={url.clone()}
-            width={width.to_string()}
-            height={height.to_string()}
-            onmousedown={on_pointer_down}
-            ondblclick={on_remove_image}
-          />
+        html! {<>
+            <img
+                ref={image_ref}
+                class="image-hidden"
+                src={url.to_string()}
+                width={width.to_string()}
+                height={height.to_string()}
+            />
+            <canvas
+                ref={canvas_ref}
+                width={width.to_string()}
+                height={height.to_string()}
+                onmousedown={on_pointer_down}
+                ondblclick={on_remove_image}
+            />
+            </>
         }
     }
 }

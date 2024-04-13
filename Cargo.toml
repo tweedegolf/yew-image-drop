@@ -13,7 +13,17 @@ unique_id = "0.1.5"
 
 [dependencies.web-sys]
 version = "0.3"
-features = ["File", "Event", "EventTarget", "HtmlElement", "HtmlImageElement", "HtmlDivElement", "DomRect"]
+features = [
+  "File", 
+  "Event", 
+  "EventTarget",
+  "HtmlElement",
+  "HtmlImageElement",
+  "HtmlDivElement",
+  "DomRect",
+  "HtmlCanvasElement",
+  "CanvasRenderingContext2d"
+ ]
 
 [dev-dependencies.web-sys]
 version = "0.3"
