@@ -2,14 +2,17 @@
 //!
 //! Simple app that allows you to drag and drop images onto the html page and position and scale them.
 
-use crate::app_state::{AppState, Msg};
+use std::borrow::{Borrow, BorrowMut};
+use std::rc::Rc;
+
+use crate::app_state::{AppState, ImageData, Msg};
 use crate::drag_and_drop::UseDrop;
 use crate::image_container::ImageContainer;
 use crate::logger::Logger;
 use gloo_console::log;
 use yew::prelude::*;
 use yew_hooks::use_event_with_window;
-use yewdux::use_store;
+use yewdux::{use_dispatch, use_selector, use_store, Dispatch};
 
 mod absolute_style;
 mod app_state;
@@ -26,7 +29,18 @@ mod scalable_image;
 /// 2. Renders container div that holds the Yew app
 #[function_component(App)]
 fn app() -> Html {
-    let (state, dispatch) = use_store::<AppState>();
+    let dispatch = use_dispatch();
+    let handle_id = use_selector(|state: &AppState| state.active_handle.clone());
+    let images = use_selector(|state: &AppState| state.images.clone());
+    let images: &Vec<ImageData> = images.borrow();
+
+    // If the user drags a resize handle show the cursor that matches the resize direction
+    let style = if let Some(handle) = handle_id.borrow() {
+        let cursor = handle.get_cursor();
+        "cursor:".to_string() + &cursor + ";"
+    } else {
+        "".to_string()
+    };
 
     {
         let dis = dispatch.clone();
@@ -87,13 +101,7 @@ fn app() -> Html {
         });
     }
 
-    // If the user drags a resize handle show the cursor that matches the resize direction
-    let style = if let Some(handle) = state.active_handle.clone() {
-        let cursor = handle.get_cursor();
-        "cursor:".to_string() + &cursor + ";"
-    } else {
-        "".to_string()
-    };
+    log!("render main");
 
     html! {
       <div class="container" style={style}>
@@ -101,7 +109,7 @@ fn app() -> Html {
         <Logger />
         <UseDrop />
         {
-          state.images.clone().into_iter().map(|img| {
+          images.clone().into_iter().map(|img| {
               html! {
                   <ImageContainer
                       key={img.id.clone()}

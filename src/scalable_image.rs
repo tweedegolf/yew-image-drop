@@ -1,7 +1,8 @@
+use gloo_console::log;
 use wasm_bindgen::JsCast;
 use web_sys::{DomRect, HtmlImageElement};
 use yew::prelude::*;
-use yewdux::use_store;
+use yewdux::{use_dispatch, use_store};
 
 use crate::app_state::{AppState, Msg};
 
@@ -30,7 +31,7 @@ pub fn scalable_image(
         height,
     }: &ImageProps,
 ) -> Html {
-    let (_state, dispatch) = use_store::<AppState>();
+    let dispatch = use_dispatch();
 
     let on_load = {
         let id2 = id.to_owned();
@@ -62,7 +63,8 @@ pub fn scalable_image(
         })
     };
 
-    // log!("--->", *width, *height);
+    log!("--->", *width, *height);
+    // log!("--->");
     if *width == 0 && *height == 0 {
         html! {
           <img src={url.to_string()} class="image" onload={on_load}/>
