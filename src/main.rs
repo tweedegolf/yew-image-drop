@@ -64,8 +64,10 @@ fn app() -> Html {
         use_event_with_window("keypress", move |e: KeyboardEvent| {
             let msg = if KeyboardEvent::key(&e) == "Delete" {
                 Msg::RemoveImage(None)
-            } else if KeyboardEvent::key(&e) == "z" {
+            } else if KeyboardEvent::key(&e) == "+" {
                 Msg::ImageToFront
+            } else if KeyboardEvent::key(&e) == "-" {
+                Msg::ImageToBack
             } else {
                 Default::default()
             };

@@ -46,6 +46,7 @@ pub enum Msg {
     CtrlKeyDown(bool),
     ShiftKeyDown(bool),
     ImageToFront,
+    ImageToBack,
     #[default]
     None,
 }
@@ -77,12 +78,12 @@ impl Reducer<AppState> for Msg {
                         img_data.y = bb.y;
                         img_data.width = bb.width;
                         img_data.height = bb.height;
-                        // log!("Msg::MouseMove bounding box", bb.to_string());
+                        log!("Msg::MouseMove bounding box", bb.to_string());
                     } else {
                         let img_data = &mut state.images[index];
                         img_data.x = x - state.anchor.x;
                         img_data.y = y - state.anchor.y;
-                        // log!("Msg::MouseMove position", img_data.x, img_data.y);
+                        log!("Msg::MouseMove position", img_data.x, img_data.y);
                     }
                 }
             }
@@ -157,10 +158,21 @@ impl Reducer<AppState> for Msg {
             }
             Msg::ImageToFront => {
                 if let Some(i) = state.active_image_index {
-                    let z_index = state.next_z_index + 1;
-                    state.next_z_index = z_index;
-                    state.images[i].z_index = z_index;
+                    let z_index = state.images[i].z_index + 1;
+                    state.images[i].z_index = if z_index > state.next_z_index {
+                        state.next_z_index = z_index;
+                        z_index
+                    } else {
+                        z_index
+                    };
                     // log!("Msg::ImageToFront", z_index);
+                }
+            }
+            Msg::ImageToBack => {
+                if let Some(i) = state.active_image_index {
+                    let z_index = state.images[i].z_index - 1;
+                    state.images[i].z_index = if z_index < 0 { 0 } else { z_index }
+                    // log!("Msg::ImageToBack", z_index);
                 }
             }
             Msg::CtrlKeyDown(flag) => {

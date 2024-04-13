@@ -34,6 +34,7 @@ pub fn scalable_image(
     let (_state, dispatch) = use_store::<AppState>();
     let image_ref = use_node_ref();
     let canvas_ref = use_node_ref();
+    // let shift_key_down = state.shift_key_down;
 
     let on_load = {
         let id2 = id.to_owned();
@@ -64,69 +65,83 @@ pub fn scalable_image(
             Msg::RemoveImage(Some(id.clone()))
         })
     };
+    /*
+        let i_ref = image_ref.clone();
+        let c_ref = canvas_ref.clone();
+        let data = (*width, *height, shift_key_down);
+        use_effect_with(data, move |_| {
+            if shift_key_down {
+                if let Some(canvas) = c_ref.cast::<HtmlCanvasElement>() {
+                    match canvas
+                        .get_context("2d")
+                        .unwrap()
+                        .unwrap()
+                        .dyn_into::<CanvasRenderingContext2d>()
+                    {
+                        Ok(ctx) => {
+                            let img = i_ref.cast::<HtmlImageElement>().unwrap();
+                            ctx.set_fill_style(&JsValue::from_str("green"));
+                            ctx.fill_rect(0., 0., data.0 as f64, data.1 as f64);
 
-    let i_ref = image_ref.clone();
-    let c_ref = canvas_ref.clone();
-    let dim = (*width, *height);
-    use_effect_with(dim, move |_| {
-        if let Some(canvas) = c_ref.cast::<HtmlCanvasElement>() {
-            match canvas
-                .get_context("2d")
-                .unwrap()
-                .unwrap()
-                .dyn_into::<CanvasRenderingContext2d>()
-            {
-                Ok(ctx) => {
-                    let img = i_ref.cast::<HtmlImageElement>().unwrap();
-                    ctx.set_fill_style(&JsValue::from_str("green"));
-                    // ctx.fill_rect(0., 0., dim.0 as f64, dim.1 as f64);
-
-                    match ctx.draw_image_with_html_image_element_and_sw_and_sh_and_dx_and_dy_and_dw_and_dh(
-                      &img, 
-                      0.,
-                      0.,
-                      dim.0 as f64, 
-                      dim.1 as f64,
-                      0.,
-                      0.,
-                      dim.0 as f64, 
-                      dim.1 as f64
-                    ) {
-                        Ok(_) => (),
+                            match ctx.draw_image_with_html_image_element_and_sw_and_sh_and_dx_and_dy_and_dw_and_dh(
+                              &img,
+                              0.,
+                              0.,
+                              data.0 as f64,
+                              data.1 as f64,
+                              0.,
+                              0.,
+                              data.0 as f64,
+                              data.1 as f64
+                            ) {
+                                Ok(_) => (),
+                                Err(e) => {
+                                    log!("error draw image", e)
+                                }
+                            }
+                        }
                         Err(e) => {
-                            log!("error draw image", e)
+                            log!("error get context", e);
                         }
                     }
                 }
-                Err(e) => {
-                    log!("error get context", e);
-                }
             }
-        }
-    });
-
+        });
+    */
     // log!("--->", *width, *height);
+    log!("--->", url.to_string());
     if *width == 0 && *height == 0 {
         html! {
-          <img src={url.to_string()} class="image" onload={on_load}/>
+            <img src={url.to_string()} class="image" onload={on_load}/>
         }
+    // } else if shift_key_down {
+    //     html! { <>
+    //         // <img
+    //         //     ref={image_ref}
+    //         //     class="image-hidden"
+    //         //     src={url.to_string()}
+    //         //     width={width.to_string()}
+    //         //     height={height.to_string()}
+    //         // />
+    //         <canvas
+    //             ref={canvas_ref}
+    //             width={width.to_string()}
+    //             height={height.to_string()}
+    //             onmousedown={on_pointer_down}
+    //             ondblclick={on_remove_image}
+    //         />
+    //     </>
+    //     }
     } else {
-        html! {<>
+        html! {
             <img
-                ref={image_ref}
-                class="image-hidden"
-                src={url.to_string()}
-                width={width.to_string()}
-                height={height.to_string()}
+              // ref={image_ref}
+              src={url.to_string()}
+              width={width.to_string()}
+              height={height.to_string()}
+              onmousedown={on_pointer_down}
+              ondblclick={on_remove_image}
             />
-            <canvas
-                ref={canvas_ref}
-                width={width.to_string()}
-                height={height.to_string()}
-                onmousedown={on_pointer_down}
-                ondblclick={on_remove_image}
-            />
-            </>
         }
     }
 }
