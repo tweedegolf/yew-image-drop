@@ -59,7 +59,10 @@ h3 {
 .image-hidden {
   /* visibility: hidden; */
   /* opacity: 0.3; */
-  display: none;
+  /* display: none; */
+  position: absolute;
+  width: 50px;
+  height: auto;
 }
 
 .handle {

@@ -1,6 +1,6 @@
 use std::rc::Rc;
 
-use gloo_console::log;
+// use gloo_console::log;
 use yewdux::{Reducer, Store};
 
 use crate::{bounding_box::BoundingBox, handle_id::HandleId, position::Position};
@@ -78,12 +78,12 @@ impl Reducer<AppState> for Msg {
                         img_data.y = bb.y;
                         img_data.width = bb.width;
                         img_data.height = bb.height;
-                        log!("Msg::MouseMove bounding box", bb.to_string());
+                        // log!("Msg::MouseMove bounding box", bb.to_string());
                     } else {
                         let img_data = &mut state.images[index];
                         img_data.x = x - state.anchor.x;
                         img_data.y = y - state.anchor.y;
-                        log!("Msg::MouseMove position", img_data.x, img_data.y);
+                        // log!("Msg::MouseMove position", img_data.x, img_data.y);
                     }
                 }
             }
@@ -93,7 +93,7 @@ impl Reducer<AppState> for Msg {
                     state.active_image_index = Some(i);
                     state.anchor.x = anchor_x;
                     state.anchor.y = anchor_y;
-                    log!("Msg::SetActiveImage", state.active_image_index);
+                    // log!("Msg::SetActiveImage", state.active_image_index);
                 }
             }
             Msg::SetActiveHandle(handle_id, image_id, anchor_x, anchor_y) => {
@@ -108,8 +108,8 @@ impl Reducer<AppState> for Msg {
                     state.lock.y = img_data.y;
                     state.lock.width = img_data.width;
                     state.lock.height = img_data.height;
-                    let h = handle_id.clone();
-                    log!("Msg::SetActiveHandle", index, h.to_string());
+                    // let h = handle_id.clone();
+                    // log!("Msg::SetActiveHandle", index, h.to_string());
                 }
             }
             Msg::AddImage(url) => {
@@ -128,8 +128,8 @@ impl Reducer<AppState> for Msg {
                     z_index,
                 };
                 state.images.push(new_image);
-                let length = state.images.len();
-                log!("Msg::AddImage", url.clone(), length);
+                // let length = state.images.len();
+                // log!("Msg::AddImage", url.clone(), length);
             }
             Msg::ImageLoaded(id, width, height) => {
                 let index = state.images.iter().position(|d| d.id == id);
@@ -139,7 +139,7 @@ impl Reducer<AppState> for Msg {
                     img_data.ratio_wh = r;
                     img_data.width = 300;
                     img_data.height = (1.0 / r * 300.0) as i16;
-                    log!("Msg::ImageLoaded", width, height, r);
+                    // log!("Msg::ImageLoaded", width, height, r);
                 }
             }
             Msg::RemoveImage(id) => {

@@ -2,14 +2,16 @@
 //!
 //! Simple app that allows you to drag and drop images onto the html page and position and scale them.
 
+use std::borrow::Borrow;
+
 use crate::app_state::{AppState, Msg};
 use crate::drag_and_drop::UseDrop;
-use crate::image_container::ImageContainer;
+use crate::images::Images;
 use crate::logger::Logger;
 use gloo_console::log;
 use yew::prelude::*;
 use yew_hooks::use_event_with_window;
-use yewdux::use_store;
+use yewdux::{use_dispatch, use_selector};
 
 mod absolute_style;
 mod app_state;
@@ -18,6 +20,7 @@ mod drag_and_drop;
 mod handle;
 mod handle_id;
 mod image_container;
+mod images;
 mod logger;
 mod position;
 mod scalable_image;
@@ -25,8 +28,17 @@ mod scalable_image;
 /// 1. Registers user input event listener that need to be handled on document level (mouseup, mousemove, keydown, keyup)
 /// 2. Renders container div that holds the Yew app
 #[function_component(App)]
-fn app() -> Html {
-    let (state, dispatch) = use_store::<AppState>();
+fn create() -> Html {
+    let dispatch = use_dispatch();
+    let handle_id = use_selector(|state: &AppState| state.active_handle.clone());
+
+    // If the user drags a resize handle show the cursor that matches the resize direction
+    let style = if let Some(handle) = handle_id.borrow() {
+        let cursor = handle.get_cursor();
+        "cursor:".to_string() + &cursor + ";"
+    } else {
+        "".to_string()
+    };
 
     {
         let dis = dispatch.clone();
@@ -89,30 +101,14 @@ fn app() -> Html {
         });
     }
 
-    // If the user drags a resize handle show the cursor that matches the resize direction
-    let style = if let Some(handle) = state.active_handle.clone() {
-        let cursor = handle.get_cursor();
-        "cursor:".to_string() + &cursor + ";"
-    } else {
-        "".to_string()
-    };
+    log!("render App");
 
     html! {
       <div class="container" style={style}>
         <h3>{ "drop an image below" }</h3>
         <Logger />
         <UseDrop />
-        {
-          state.images.clone().into_iter().map(|img| {
-              html! {
-                  <ImageContainer
-                      key={img.id.clone()}
-                      id={img.id.clone()}
-                      url={img.url.clone()}
-                    />
-                  }
-            }).collect::<Html>()
-        }
+        <Images />
       </div>
     }
 }

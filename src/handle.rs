@@ -1,6 +1,8 @@
+use std::borrow::Borrow;
+
 use gloo_console::log;
 use yew::prelude::*;
-use yewdux::use_store;
+use yewdux::{use_dispatch, use_selector};
 
 use crate::{
     absolute_style::AbsoluteStyle,
@@ -22,8 +24,9 @@ pub struct HandleProps {
 /// Once the store is updated, the handle renders again to set the cursor in the style attribute to `inherit`. This is done
 /// because once a resize handle is active, the cursor changes to match the resize direction on document level.
 #[function_component(Handle)]
-pub fn handle(HandleProps { image_id, id, x, y }: &HandleProps) -> Html {
-    let (state, dispatch) = use_store::<AppState>();
+pub fn create(HandleProps { image_id, id, x, y }: &HandleProps) -> Html {
+    let dispatch = use_dispatch();
+    let active_handle = use_selector(|state: &AppState| state.active_handle.clone());
 
     let on_pointer_down = {
         let handle_id = id.to_owned();
@@ -43,13 +46,13 @@ pub fn handle(HandleProps { image_id, id, x, y }: &HandleProps) -> Html {
     }
     .to_string();
 
-    if let Some(handle_id) = &state.active_handle {
+    if let Some(handle_id) = active_handle.borrow() {
         if handle_id == id {
-            style = style + "cursor: inherit"
+            style += "cursor: inherit"
         }
     }
 
-    let class = if let Some(handle_id) = &state.active_handle {
+    let class = if let Some(handle_id) = active_handle.borrow() {
         if handle_id == id {
             "handle handle-active"
         } else {
@@ -58,6 +61,8 @@ pub fn handle(HandleProps { image_id, id, x, y }: &HandleProps) -> Html {
     } else {
         "handle"
     };
+
+    // log!("render handle", id.to_string());
 
     html! {
     <div
