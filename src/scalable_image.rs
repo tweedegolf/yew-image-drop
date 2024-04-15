@@ -14,8 +14,16 @@ pub struct ImageProps {
     pub url: String,
     pub width: i16,
     pub height: i16,
-    // pub orig_width: i16,
-    // pub orig_height: i16,
+    pub natural_width: i16,
+    pub natural_height: i16,
+}
+
+struct Data {
+    pub width: f64,
+    pub height: f64,
+    pub natural_width: f64,
+    pub natural_height: f64,
+    pub shift_key_down: bool,
 }
 
 /// Component that renders the image
@@ -33,6 +41,8 @@ pub fn create(
         url,
         width,
         height,
+        natural_width,
+        natural_height,
     }: &ImageProps,
 ) -> Html {
     let dispatch = use_dispatch();
@@ -45,11 +55,17 @@ pub fn create(
         let id2 = id.to_owned();
         dispatch.apply_callback(move |e: Event| {
             let target = e.target().unwrap();
-            let div = target.dyn_ref::<HtmlImageElement>().unwrap();
-            let rect: DomRect = div.get_bounding_client_rect();
+            let img = target.dyn_ref::<HtmlImageElement>().unwrap();
+            let rect: DomRect = img.get_bounding_client_rect();
             let w = rect.width() as i16;
             let h = rect.height() as i16;
-            Msg::ImageLoaded(id2.clone(), w, h)
+            Msg::ImageLoaded(
+                id2.clone(),
+                w,
+                h,
+                img.natural_width() as i16,
+                img.natural_height() as i16,
+            )
         })
     };
 
@@ -73,7 +89,13 @@ pub fn create(
 
     let i_ref = image_ref.clone();
     let c_ref = canvas_ref.clone();
-    let data = (*width, *height, shift_key_down);
+    let data = Data {
+        width: *width as f64,
+        height: *height as f64,
+        natural_width: *natural_width as f64,
+        natural_height: *natural_height as f64,
+        shift_key_down,
+    };
 
     let create_canvas = move || {
         // if shift_key_down {
@@ -87,35 +109,45 @@ pub fn create(
                 Ok(ctx) => {
                     let img = i_ref.cast::<HtmlImageElement>().unwrap();
                     ctx.set_fill_style(&JsValue::from_str("green"));
-                    ctx.fill_rect(0., 0., data.0 as f64, data.1 as f64);
+                    ctx.fill_rect(0., 0., data.width, data.height);
 
-                    match ctx.create_pattern_with_html_image_element(&img, "repeat") {
-                        Ok(pattern) => {
-                            if let Some(pat) = pattern {
-                                ctx.set_fill_style(&pat);
-                                ctx.fill_rect(0., 0., data.0 as f64, data.1 as f64);
+                    if data.shift_key_down {
+                        match ctx.create_pattern_with_html_image_element(&img, "repeat") {
+                            Ok(pattern) => {
+                                if let Some(pat) = pattern {
+                                    ctx.set_fill_style(&pat);
+                                    ctx.fill_rect(0., 0., data.width, data.height);
+                                }
+                            }
+                            Err(e) => {
+                                log!("error draw pattern", e)
                             }
                         }
-                        Err(e) => {
-                            log!("error draw pattern", e)
-                        }
+                    } else {
+                        match ctx.draw_image_with_html_image_element_and_sw_and_sh_and_dx_and_dy_and_dw_and_dh(
+                                &img,
+                                0.,
+                                0.,
+                                data.natural_width,
+                                data.natural_height,
+                                0.,
+                                0.,
+                                (data.width / data.natural_width ) * data.natural_width,
+                                (data.height / data.natural_height) * data.natural_height,
+                              ) {
+                                  Ok(_) => {
+                                    // let x  = data.width / data.natural_width; 
+                                    // let y  = data.height / data.natural_height; 
+                                    // match ctx.scale(x, y) {
+                                    //   Ok(_) => (),
+                                    //   Err(e) => log!("error scale image", e)
+                                    // }
+                                  },
+                                  Err(e) => {
+                                      log!("error draw image", e)
+                                  }
+                              }
                     }
-                    // match ctx.draw_image_with_html_image_element_and_sw_and_sh_and_dx_and_dy_and_dw_and_dh(
-                    //           &img,
-                    //           0.,
-                    //           0.,
-                    //           data.0 as f64,
-                    //           data.1 as f64,
-                    //           0.,
-                    //           0.,
-                    //           data.0 as f64,
-                    //           data.1 as f64
-                    //         ) {
-                    //             Ok(_) => (),
-                    //             Err(e) => {
-                    //                 log!("error draw image", e)
-                    //             }
-                    //         }
                 }
                 Err(e) => {
                     log!("error get context", e);

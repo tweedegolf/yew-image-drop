@@ -40,6 +40,8 @@ pub fn create(ImageContainerProps { data }: &ImageContainerProps) -> Html {
           url={data.url.clone()}
           width={width}
           height={height}
+          natural_width={data.natural_width}
+          natural_height={data.natural_height}
         />
         {HandleId::get_html(width, height, data.id.to_string())}
       </div>

@@ -1,6 +1,6 @@
 use std::borrow::Borrow;
 
-use gloo_console::log;
+// use gloo_console::log;
 use yew::prelude::*;
 use yewdux::{use_dispatch, use_selector};
 

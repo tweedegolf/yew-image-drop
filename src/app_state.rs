@@ -16,6 +16,8 @@ pub struct ImageData {
     pub y: i16,
     pub width: i16,
     pub height: i16,
+    pub natural_width: i16,
+    pub natural_height: i16,
     pub ratio_wh: f32,
     pub z_index: i16,
 }
@@ -37,7 +39,7 @@ pub struct AppState {
 #[derive(Clone, Default)]
 pub enum Msg {
     AddImage(String),
-    ImageLoaded(String, i16, i16),
+    ImageLoaded(String, i16, i16, i16, i16),
     SetActiveHandle(HandleId, String, i16, i16),
     SetActiveImage(String, i16, i16),
     RemoveImage(Option<String>),
@@ -124,6 +126,8 @@ impl Reducer<AppState> for Msg {
                     y: 50,
                     width: 0,
                     height: 0,
+                    natural_width: 0,
+                    natural_height: 0,
                     ratio_wh: 0.0,
                     z_index,
                 };
@@ -131,7 +135,7 @@ impl Reducer<AppState> for Msg {
                 // let length = state.images.len();
                 // log!("Msg::AddImage", url.clone(), length);
             }
-            Msg::ImageLoaded(id, width, height) => {
+            Msg::ImageLoaded(id, width, height, natural_width, natural_height) => {
                 let index = state.images.iter().position(|d| d.id == id);
                 if let Some(i) = index {
                     let img_data = &mut state.images[i];
@@ -139,6 +143,8 @@ impl Reducer<AppState> for Msg {
                     img_data.ratio_wh = r;
                     img_data.width = 300;
                     img_data.height = (1.0 / r * 300.0) as i16;
+                    img_data.natural_width = natural_width;
+                    img_data.natural_height = natural_height;
                     // log!("Msg::ImageLoaded", width, height, r);
                 }
             }
