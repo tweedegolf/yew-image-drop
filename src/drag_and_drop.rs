@@ -1,9 +1,10 @@
+use gloo_console::log;
 use web_sys::Url;
 use yew::prelude::*;
 use yew_hooks::prelude::*;
-use yewdux::use_store;
+use yewdux::use_dispatch;
 
-use crate::app_state::{AppState, Msg};
+use crate::app_state::Msg;
 
 /// Drag and drop component. The whole document is a drop area.
 ///
@@ -11,10 +12,9 @@ use crate::app_state::{AppState, Msg};
 #[function_component(UseDrop)]
 pub fn drop() -> Html {
     let node: NodeRef = use_node_ref();
-    let state = use_drop(node.clone());
-    let (_state, dispatch) = use_store::<AppState>();
+    let drop_state = use_drop(node.clone());
+    let dispatch = use_dispatch();
 
-    // Demo #2, use callback options.
     let _ = use_drop_with_options(
         node.clone(),
         UseDropOptions {
@@ -32,12 +32,14 @@ pub fn drop() -> Html {
         },
     );
 
+    log!("render Drop");
+
     html! {
     <div>
         <div
           ref={node}
           class={
-            if *state.over {
+            if *drop_state.over {
               "drop-area-over"
             } else {
               "drop-area"

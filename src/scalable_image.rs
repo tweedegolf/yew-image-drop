@@ -2,9 +2,9 @@ use gloo_console::log;
 use wasm_bindgen::JsCast;
 use web_sys::{DomRect, HtmlImageElement};
 use yew::prelude::*;
-use yewdux::{use_dispatch, use_store};
+use yewdux::use_dispatch;
 
-use crate::app_state::{AppState, Msg};
+use crate::app_state::Msg;
 
 #[derive(Clone, Properties, PartialEq)]
 pub struct ImageProps {
@@ -63,8 +63,8 @@ pub fn scalable_image(
         })
     };
 
-    log!("--->", *width, *height);
-    // log!("--->");
+    // log!("--->", *width, *height);
+    log!("render ScalableImage");
     if *width == 0 && *height == 0 {
         html! {
           <img src={url.to_string()} class="image" onload={on_load}/>

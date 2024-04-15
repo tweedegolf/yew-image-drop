@@ -8,12 +8,11 @@ use crate::{
 };
 use gloo_console::log;
 use yew::prelude::*;
-use yewdux::{use_selector, use_store};
+use yewdux::use_selector;
 
 #[derive(Clone, Properties, PartialEq)]
 pub struct ImageContainerProps {
-    pub id: String,
-    pub url: String,
+    pub data: ImageData,
 }
 
 /// Renders a container for the image and the resize handles
@@ -22,34 +21,32 @@ pub struct ImageContainerProps {
 /// the store. As soon as the store is updated the container renders again and passes on the new dimensions
 /// to the ScalableImage component.
 #[function_component(ImageContainer)]
-pub fn image(ImageContainerProps { id, url }: &ImageContainerProps) -> Html {
-    let images = use_selector(|state: &AppState| state.images.clone());
-    let images: &Vec<ImageData> = images.borrow();
-    let index = images.iter().position(|d| d.id == *id).unwrap();
-
-    let width = images[index].width;
-    let height = images[index].height;
+pub fn image(ImageContainerProps { data }: &ImageContainerProps) -> Html {
+    let width = data.width;
+    let height = data.height;
     let style = AbsoluteStyle {
-        x: images[index].x,
-        y: images[index].y,
+        x: data.x,
+        y: data.y,
         width: Some(width),
         height: Some(height),
-        z_index: Some(images[index].z_index),
+        z_index: Some(data.z_index),
     }
     .to_string();
 
+    log!("render ImageContainer", data.id.clone());
+
     html! {
       <div
-        key={id.clone()}
+        key={data.id.clone()}
         class="image-container" style={style}
       >
         <ScalableImage
-          id={id.clone()}
-          url={url.clone()}
+          id={data.id.clone()}
+          url={data.url.clone()}
           width={width}
           height={height}
         />
-        {HandleId::get_html(width, height, id.to_string())}
+        {HandleId::get_html(width, height, data.id.to_string())}
       </div>
     }
 }

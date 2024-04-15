@@ -92,7 +92,7 @@ impl Reducer<AppState> for Msg {
                     state.active_image_index = Some(i);
                     state.anchor.x = anchor_x;
                     state.anchor.y = anchor_y;
-                    log!("Msg::SetActiveImage", state.active_image_index);
+                    // log!("Msg::SetActiveImage", state.active_image_index);
                 }
             }
             Msg::SetActiveHandle(handle_id, image_id, anchor_x, anchor_y) => {
@@ -108,7 +108,7 @@ impl Reducer<AppState> for Msg {
                     state.lock.width = img_data.width;
                     state.lock.height = img_data.height;
                     let h = handle_id.clone();
-                    log!("Msg::SetActiveHandle", index, h.to_string());
+                    // log!("Msg::SetActiveHandle", index, h.to_string());
                 }
             }
             Msg::AddImage(url) => {
@@ -128,7 +128,7 @@ impl Reducer<AppState> for Msg {
                 };
                 state.images.push(new_image);
                 let length = state.images.len();
-                log!("Msg::AddImage", url.clone(), length);
+                // log!("Msg::AddImage", url.clone(), length);
             }
             Msg::ImageLoaded(id, width, height) => {
                 let index = state.images.iter().position(|d| d.id == id);
@@ -138,7 +138,7 @@ impl Reducer<AppState> for Msg {
                     img_data.ratio_wh = r;
                     img_data.width = 300;
                     img_data.height = (1.0 / r * 300.0) as i16;
-                    log!("Msg::ImageLoaded", width, height, r);
+                    // log!("Msg::ImageLoaded", width, height, r);
                 }
             }
             Msg::RemoveImage(id) => {
