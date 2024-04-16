@@ -2,7 +2,8 @@ use std::borrow::Borrow;
 
 use gloo_console::log;
 use wasm_bindgen::{JsCast, JsValue};
-use web_sys::{CanvasRenderingContext2d, DomRect, HtmlCanvasElement, HtmlImageElement};
+use web_sys::js_sys::Object;
+use web_sys::{CanvasRenderingContext2d, DomRect, HtmlCanvasElement, HtmlImageElement, SvgMatrix};
 use yew::prelude::*;
 use yewdux::{use_dispatch, use_selector};
 
@@ -112,16 +113,46 @@ pub fn create(
                     ctx.fill_rect(0., 0., data.width, data.height);
 
                     if data.shift_key_down {
-                        match ctx.create_pattern_with_html_image_element(&img, "repeat") {
-                            Ok(pattern) => {
-                                if let Some(pat) = pattern {
-                                    ctx.set_fill_style(&pat);
-                                    ctx.fill_rect(0., 0., data.width, data.height);
-                                }
-                            }
+                        let sw = (data.width / data.natural_width) * data.natural_width;
+                        let sh = (data.height / data.natural_height) * data.natural_height;
+                        match ctx
+                            .draw_image_with_html_image_element_and_dw_and_dh(&img, 0., 0., sw, sh)
+                        {
+                            Ok(_) => (),
                             Err(e) => {
-                                log!("error draw pattern", e)
+                                log!("error drawImage", e);
                             }
+                        }
+
+                        // let image_data_option: Option<ImageData> =
+                        //     match ctx.create_image_data_with_sw_and_sh(sw, sh) {
+                        //         Ok(d) => Some(d),
+                        //         Err(e) => {
+                        //             log!("error", e);
+                        //             None
+                        //         }
+                        //     };
+
+                        let pattern_option =
+                            match ctx.create_pattern_with_html_image_element(&img, "repeat") {
+                                Ok(pattern) => pattern,
+                                Err(e) => {
+                                    log!("error draw pattern", e);
+                                    None
+                                }
+                            };
+                        if let Some(pattern) = pattern_option {
+                            let matrix: SvgMatrix = SvgMatrix::from(JsValue::from(Object::new()));
+                            matrix.set_a(0.1);
+                            matrix.set_b(0.);
+                            matrix.set_c(0.);
+                            matrix.set_d(0.1);
+                            matrix.set_e(0.);
+                            matrix.set_f(0.);
+                            // let matrix = matrix.scale(0.5 as f32);
+                            pattern.set_transform(&matrix);
+                            ctx.set_fill_style(&pattern);
+                            ctx.fill_rect(0., 0., data.width, data.height);
                         }
                     } else {
                         match ctx.draw_image_with_html_image_element_and_sw_and_sh_and_dx_and_dy_and_dw_and_dh(

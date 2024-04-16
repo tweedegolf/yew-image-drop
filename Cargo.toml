@@ -23,7 +23,10 @@ features = [
   "DomRect",
   "HtmlCanvasElement",
   "CanvasRenderingContext2d",
-  "CanvasPattern"
+  "CanvasPattern",
+  "ImageData",
+  "ImageBitmap",
+  "SvgMatrix"
  ]
 
 [dev-dependencies.web-sys]
