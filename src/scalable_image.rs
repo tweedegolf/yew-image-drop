@@ -2,24 +2,18 @@ use std::borrow::Borrow;
 
 use gloo_console::log;
 use wasm_bindgen::{JsCast, JsValue};
-use web_sys::js_sys::Object;
 use web_sys::{
-    CanvasPattern, CanvasRenderingContext2d, DomRect, HtmlCanvasElement, HtmlImageElement,
-    SvgElement, SvgMatrix, SvgsvgElement,
+    CanvasRenderingContext2d, DomRect, HtmlCanvasElement, HtmlImageElement, SvgMatrix,
+    SvgsvgElement,
 };
 use yew::prelude::*;
 use yewdux::{use_dispatch, use_selector};
 
-use crate::app_state::{AppState, Msg};
+use crate::app_state::{AppState, ImageData, Msg};
 
 #[derive(Clone, Properties, PartialEq)]
 pub struct ImageProps {
-    pub id: String,
-    pub url: String,
-    pub width: i16,
-    pub height: i16,
-    pub natural_width: i16,
-    pub natural_height: i16,
+    pub data: ImageData,
 }
 
 struct Data {
@@ -27,6 +21,8 @@ struct Data {
     pub height: f64,
     pub natural_width: f64,
     pub natural_height: f64,
+    pub pattern_width: f64,
+    pub pattern_height: f64,
     pub shift_key_down: bool,
 }
 
@@ -39,22 +35,27 @@ struct Data {
 /// and the height of the image are stored. This triggers a rerender and then the component enters its 2nd stage where it
 /// is rendered with a fixed size and mouse handlers so that in this 2nd stage the image can be dragged around, resized and removed.
 #[function_component(ScalableImage)]
-pub fn create(
-    ImageProps {
+pub fn create(ImageProps { data }: &ImageProps) -> Html {
+    let ImageData {
         id,
         url,
         width,
         height,
         natural_width,
         natural_height,
-    }: &ImageProps,
-) -> Html {
+        pattern_width,
+        pattern_height,
+        use_pattern,
+        ..
+    } = data;
+
     let dispatch = use_dispatch();
     let svg_ref = use_node_ref();
     let image_ref = use_node_ref();
     let canvas_ref = use_node_ref();
     let shift_key_down = use_selector(|state: &AppState| state.shift_key_down);
     let shift_key_down: bool = *shift_key_down.borrow();
+    let use_pattern = *use_pattern;
 
     let on_load = {
         let id2 = id.to_owned();
@@ -100,11 +101,12 @@ pub fn create(
         height: *height as f64,
         natural_width: *natural_width as f64,
         natural_height: *natural_height as f64,
+        pattern_width: *pattern_width as f64,
+        pattern_height: *pattern_height as f64,
         shift_key_down,
     };
 
     let create_canvas = move || {
-        // if shift_key_down {
         if let Some(canvas) = c_ref.cast::<HtmlCanvasElement>() {
             match canvas
                 .get_context("2d")
@@ -113,85 +115,60 @@ pub fn create(
                 .dyn_into::<CanvasRenderingContext2d>()
             {
                 Ok(ctx) => {
-                    let img = i_ref.cast::<HtmlImageElement>().unwrap();
+                    let svg_element = s_ref.cast::<SvgsvgElement>().unwrap();
+                    let img_element = i_ref.cast::<HtmlImageElement>().unwrap();
                     ctx.set_fill_style(&JsValue::from_str("green"));
                     ctx.fill_rect(0., 0., data.width, data.height);
 
-                    if data.shift_key_down {
-                        let sw = (data.width / data.natural_width) * data.natural_width;
-                        let sh = (data.height / data.natural_height) * data.natural_height;
-                        match ctx
-                            .draw_image_with_html_image_element_and_dw_and_dh(&img, 0., 0., sw, sh)
-                        {
+                    let sw = data.width / data.natural_width;
+                    let sh = data.height / data.natural_height;
+                    if data.shift_key_down || use_pattern {
+                        match ctx.draw_image_with_html_image_element_and_dw_and_dh(
+                            &img_element,
+                            0.,
+                            0.,
+                            sw,
+                            sh,
+                        ) {
                             Ok(_) => (),
                             Err(e) => {
                                 log!("error drawImage", e);
                             }
                         }
 
-                        // let image_data_option: Option<ImageData> =
-                        //     match ctx.create_image_data_with_sw_and_sh(sw, sh) {
-                        //         Ok(d) => Some(d),
-                        //         Err(e) => {
-                        //             log!("error", e);
-                        //             None
-                        //         }
-                        //     };
-
-                        let pattern_option =
-                            match ctx.create_pattern_with_html_image_element(&img, "repeat") {
-                                Ok(pattern) => pattern,
-                                Err(e) => {
-                                    log!("error draw pattern", e);
-                                    None
-                                }
-                            };
-                        if let Some(pattern) = pattern_option {
-                            // let obj = Object::new();
-                            // let matrix: SvgMatrix = SvgMatrix::from(obj);
-                            // let matrix = matrix.rotate(0.5 as f32);
-                            // let svg_element = SvgsvgElement::new();
-                            // let svg_element: SvgsvgElement = SvgsvgElement::create_svg_angle();
-                            if let Some(svg_element) = s_ref.cast::<SvgsvgElement>() {
-                                let matrix: SvgMatrix = svg_element.create_svg_matrix();
-                                matrix.set_a(1.);
-                                matrix.set_b(0.);
-                                matrix.set_c(0.);
-                                matrix.set_d(1.);
-                                matrix.set_e(0.);
-                                matrix.set_f(0.);
-                                // let matrix = matrix.scale_non_uniform(0.5 as f32, 0.5 as f32);
-                                let matrix = matrix.rotate(20 as f32).scale(0.2 as f32);
-                                pattern.set_transform(&matrix);
+                        let pattern_option = match ctx
+                            .create_pattern_with_html_image_element(&img_element, "repeat")
+                        {
+                            Ok(pattern) => pattern,
+                            Err(e) => {
+                                log!("error draw pattern", e);
+                                None
                             }
+                        };
+                        if let Some(pattern) = pattern_option {
+                            let sw = data.pattern_width / data.natural_width;
+                            let sh = data.pattern_height / data.natural_height;
 
+                            let matrix: SvgMatrix = svg_element.create_svg_matrix();
+                            let matrix = matrix.scale_non_uniform(sw as f32, sh as f32);
+
+                            pattern.set_transform(&matrix);
                             ctx.set_fill_style(&pattern);
                             ctx.fill_rect(0., 0., data.width, data.height);
                         }
                     } else {
-                        match ctx.draw_image_with_html_image_element_and_sw_and_sh_and_dx_and_dy_and_dw_and_dh(
-                                &img,
-                                0.,
-                                0.,
-                                data.natural_width,
-                                data.natural_height,
-                                0.,
-                                0.,
-                                (data.width / data.natural_width ) * data.natural_width,
-                                (data.height / data.natural_height) * data.natural_height,
-                              ) {
-                                  Ok(_) => {
-                                    // let x  = data.width / data.natural_width; 
-                                    // let y  = data.height / data.natural_height; 
-                                    // match ctx.scale(x, y) {
-                                    //   Ok(_) => (),
-                                    //   Err(e) => log!("error scale image", e)
-                                    // }
-                                  },
-                                  Err(e) => {
-                                      log!("error draw image", e)
-                                  }
-                              }
+                        match ctx.draw_image_with_html_image_element_and_dw_and_dh(
+                            &img_element,
+                            0.,
+                            0.,
+                            sw * data.natural_width,
+                            sh * data.natural_height,
+                        ) {
+                            Ok(_) => (),
+                            Err(e) => {
+                                log!("error draw image", e)
+                            }
+                        }
                     }
                 }
                 Err(e) => {
@@ -199,7 +176,6 @@ pub fn create(
                 }
             }
         }
-        // }
     };
 
     let data = (*width, *height, shift_key_down);
@@ -209,6 +185,7 @@ pub fn create(
     });
 
     log!("render ScalableImage");
+
     if *width == 0 && *height == 0 {
         html! {
             <img src={url.to_string()} class="image" onload={on_load}/>

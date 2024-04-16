@@ -24,8 +24,6 @@ features = [
   "HtmlCanvasElement",
   "CanvasRenderingContext2d",
   "CanvasPattern",
-  "ImageData",
-  "ImageBitmap",
   "SvgMatrix",
   "SvgsvgElement",
  ]

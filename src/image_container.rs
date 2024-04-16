@@ -36,12 +36,8 @@ pub fn create(ImageContainerProps { data }: &ImageContainerProps) -> Html {
         class="image-container" style={style}
       >
         <ScalableImage
-          id={data.id.clone()}
-          url={data.url.clone()}
-          width={width}
-          height={height}
-          natural_width={data.natural_width}
-          natural_height={data.natural_height}
+          key={data.id.clone()}
+          data={data.clone()}
         />
         {HandleId::get_html(width, height, data.id.to_string())}
       </div>

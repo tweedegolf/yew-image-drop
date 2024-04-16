@@ -18,8 +18,11 @@ pub struct ImageData {
     pub height: i16,
     pub natural_width: i16,
     pub natural_height: i16,
+    pub pattern_width: i16,
+    pub pattern_height: i16,
     pub ratio_wh: f32,
     pub z_index: i16,
+    pub use_pattern: bool,
 }
 /// - `active_handle`&rarr; Is set as soon as the user clicks on a resize handle
 /// - `active_image_index`&rarr; Is set as soon as the user clicks on an image or when the user clicks on a resize handle of that image
@@ -80,6 +83,10 @@ impl Reducer<AppState> for Msg {
                         img_data.y = bb.y;
                         img_data.width = bb.width;
                         img_data.height = bb.height;
+                        if !state.shift_key_down {
+                            img_data.pattern_width = bb.width;
+                            img_data.pattern_height = bb.height;
+                        }
                         // log!("Msg::MouseMove bounding box", bb.to_string());
                     } else {
                         let img_data = &mut state.images[index];
@@ -110,8 +117,7 @@ impl Reducer<AppState> for Msg {
                     state.lock.y = img_data.y;
                     state.lock.width = img_data.width;
                     state.lock.height = img_data.height;
-                    // let h = handle_id.clone();
-                    // log!("Msg::SetActiveHandle", index, h.to_string());
+                    img_data.use_pattern = state.shift_key_down;
                 }
             }
             Msg::AddImage(url) => {
@@ -128,8 +134,11 @@ impl Reducer<AppState> for Msg {
                     height: 0,
                     natural_width: 0,
                     natural_height: 0,
+                    pattern_width: 0,
+                    pattern_height: 0,
                     ratio_wh: 0.0,
                     z_index,
+                    use_pattern: false,
                 };
                 state.images.push(new_image);
                 // let length = state.images.len();
@@ -145,6 +154,8 @@ impl Reducer<AppState> for Msg {
                     img_data.height = (1.0 / r * 300.0) as i16;
                     img_data.natural_width = natural_width;
                     img_data.natural_height = natural_height;
+                    img_data.pattern_width = img_data.width;
+                    img_data.pattern_height = img_data.height;
                     // log!("Msg::ImageLoaded", width, height, r);
                 }
             }
