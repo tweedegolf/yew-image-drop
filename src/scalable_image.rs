@@ -3,7 +3,10 @@ use std::borrow::Borrow;
 use gloo_console::log;
 use wasm_bindgen::{JsCast, JsValue};
 use web_sys::js_sys::Object;
-use web_sys::{CanvasRenderingContext2d, DomRect, HtmlCanvasElement, HtmlImageElement, SvgMatrix};
+use web_sys::{
+    CanvasPattern, CanvasRenderingContext2d, DomRect, HtmlCanvasElement, HtmlImageElement,
+    SvgElement, SvgMatrix, SvgsvgElement,
+};
 use yew::prelude::*;
 use yewdux::{use_dispatch, use_selector};
 
@@ -47,6 +50,7 @@ pub fn create(
     }: &ImageProps,
 ) -> Html {
     let dispatch = use_dispatch();
+    let svg_ref = use_node_ref();
     let image_ref = use_node_ref();
     let canvas_ref = use_node_ref();
     let shift_key_down = use_selector(|state: &AppState| state.shift_key_down);
@@ -88,6 +92,7 @@ pub fn create(
         })
     };
 
+    let s_ref = svg_ref.clone();
     let i_ref = image_ref.clone();
     let c_ref = canvas_ref.clone();
     let data = Data {
@@ -142,15 +147,24 @@ pub fn create(
                                 }
                             };
                         if let Some(pattern) = pattern_option {
-                            let matrix: SvgMatrix = SvgMatrix::from(JsValue::from(Object::new()));
-                            matrix.set_a(0.1);
-                            matrix.set_b(0.);
-                            matrix.set_c(0.);
-                            matrix.set_d(0.1);
-                            matrix.set_e(0.);
-                            matrix.set_f(0.);
-                            // let matrix = matrix.scale(0.5 as f32);
-                            pattern.set_transform(&matrix);
+                            // let obj = Object::new();
+                            // let matrix: SvgMatrix = SvgMatrix::from(obj);
+                            // let matrix = matrix.rotate(0.5 as f32);
+                            // let svg_element = SvgsvgElement::new();
+                            // let svg_element: SvgsvgElement = SvgsvgElement::create_svg_angle();
+                            if let Some(svg_element) = s_ref.cast::<SvgsvgElement>() {
+                                let matrix: SvgMatrix = svg_element.create_svg_matrix();
+                                matrix.set_a(1.);
+                                matrix.set_b(0.);
+                                matrix.set_c(0.);
+                                matrix.set_d(1.);
+                                matrix.set_e(0.);
+                                matrix.set_f(0.);
+                                // let matrix = matrix.scale_non_uniform(0.5 as f32, 0.5 as f32);
+                                let matrix = matrix.rotate(20 as f32).scale(0.2 as f32);
+                                pattern.set_transform(&matrix);
+                            }
+
                             ctx.set_fill_style(&pattern);
                             ctx.fill_rect(0., 0., data.width, data.height);
                         }
@@ -201,6 +215,12 @@ pub fn create(
         }
     } else {
         html! { <>
+            <svg
+                ref={svg_ref}
+                xmlns="http://www.w3.org/2000/svg"
+                width="0"
+                height="0"
+            />
             <img
                 ref={image_ref}
                 class="image-hidden"
