@@ -4,6 +4,8 @@ A simple sample application using [Yew](https://yew.rs/) and the `use_drop` hook
 
 You can drop images onto the page and drag and resize the images afterwards. Every image gets a resize handle for every resize direction, eight in total.
 
+&rarr;&rarr;&rarr;[Live example](https://tweedegolf.github.io/yew-image-drop/)&larr;&larr;&larr;
+
 - resize image &rarr; drag any handle
 - resize image while keeping the ratio &rarr; drag any handle + `ctrl` key
 - remove image &rarr; double click on an image or mouse down + `delete` key
