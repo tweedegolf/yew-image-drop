@@ -2,7 +2,22 @@
 
 A simple sample application using [Yew](https://yew.rs/) and the `use_drop` hook from [yew-hooks](https://docs.rs/yew-hooks/latest/yew_hooks/index.html) and [yewdux](https://github.com/intendednull/yewdux) for state management.
 
-You can drop images onto the page and drag and resize the images afterwards. Every image gets a resize handle for every resize direction, eight in total. Holding down the `ctrl` key while dragging a resize handle will keep the image in its original ratio. You can remove an image by double-clicking. To bring an image to the front click and hold your mouse on an image and press `z` on your keyboard. To mask or show a certain part of the image hold down the `shift` key while dragging a resize handle.
+You can drop images onto the page and drag and resize the images afterwards. Every image gets a resize handle for every resize direction, eight in total.
+
+- resize image &rarr; drag any handle
+- resize image while keeping the ratio &rarr; drag any handle + `ctrl` key
+- remove image &rarr; double click on an image or mouse down + `delete` key
+- bring to front &rarr; mouse down + `plus` key
+- bring to back &rarr; mouse down + `minus` key
+- create a pattern &rarr; hold `shift` key while dragging a resize handler
+
+To create a pattern:
+
+1. add an image to the stage
+2. resize the image to your liking; this is size and shape of the image that will be repeated
+3. resize the image while holding the `shift` key to create a surface with a pattern
+
+To adjust a pattern simply resize the image again.
 
 ## How it works
 
