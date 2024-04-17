@@ -27,6 +27,7 @@ pub struct HandleProps {
 pub fn create(HandleProps { image_id, id, x, y }: &HandleProps) -> Html {
     let dispatch = use_dispatch();
     let active_handle = use_selector(|state: &AppState| state.active_handle.clone());
+    let active_image_index = use_selector(|state: &AppState| state.active_image_index);
 
     let on_pointer_down = {
         let handle_id = id.to_owned();
@@ -46,14 +47,20 @@ pub fn create(HandleProps { image_id, id, x, y }: &HandleProps) -> Html {
     }
     .to_string();
 
+    let is_active_image = if let Some(i) = active_image_index.borrow() {
+        &i.to_string() == image_id
+    } else {
+        false
+    };
+
     if let Some(handle_id) = active_handle.borrow() {
-        if handle_id == id {
+        if handle_id == id && is_active_image {
             style += "cursor: inherit"
         }
     }
 
     let class = if let Some(handle_id) = active_handle.borrow() {
-        if handle_id == id {
+        if handle_id == id && is_active_image {
             "handle handle-active"
         } else {
             "handle"

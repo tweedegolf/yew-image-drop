@@ -15,14 +15,16 @@ pub fn create() -> Html {
     let on_change = dispatch.apply_callback(move |e: Event| {
         let target = e.target().unwrap();
         let input = target.dyn_ref::<HtmlInputElement>().unwrap();
+        let mut urls = Vec::new();
 
         if let Some(file_list) = input.files() {
-            if let Some(file) = file_list.item(0) {
+            let len = file_list.length();
+            for i in 0..len {
+                let file = file_list.item(i).unwrap();
                 let url = Url::create_object_url_with_blob(&file).unwrap();
-                Msg::AddImage(url.clone())
-            } else {
-                Msg::None
+                urls.push(url.clone());
             }
+            Msg::AddImages(urls)
         } else {
             Msg::None
         }
@@ -40,7 +42,13 @@ pub fn create() -> Html {
 
     html! {
       <>
-        <input ref={input_ref} class="file_input" type="file" onchange={on_change} accept="image/png, image/jpeg"/>
+        <input
+            ref={input_ref}
+            class="file_input" type="file"
+            accept="image/png, image/jpeg"
+            multiple={true}
+            onchange={on_change}
+        />
         <div class="file-dialog-button" onclick={on_click}>{"open file dialog"}</div>
       </>
     }

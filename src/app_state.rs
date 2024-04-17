@@ -41,7 +41,7 @@ pub struct AppState {
 
 #[derive(Clone, Default)]
 pub enum Msg {
-    AddImage(String),
+    AddImages(Vec<String>),
     ImageLoaded(String, i16, i16, i16, i16),
     SetActiveHandle(HandleId, String, i16, i16),
     SetActiveImage(String, i16, i16),
@@ -59,7 +59,6 @@ pub enum Msg {
 impl Reducer<AppState> for Msg {
     fn apply(self, mut app_state: Rc<AppState>) -> Rc<AppState> {
         let state = Rc::make_mut(&mut app_state);
-        let index = state.images.len();
         match self {
             Msg::MouseUp => {
                 state.active_handle = None;
@@ -120,27 +119,34 @@ impl Reducer<AppState> for Msg {
                     img_data.use_pattern = state.shift_key_down;
                 }
             }
-            Msg::AddImage(url) => {
-                let z_index = state.next_z_index + 1;
-                state.next_z_index = z_index;
-                let new_image = ImageData {
-                    id: index.to_string(),
-                    url: url.clone(),
-                    // x: state.mouse.x,
-                    // y: state.mouse.y,
-                    x: 50,
-                    y: 50,
-                    width: 0,
-                    height: 0,
-                    natural_width: 0,
-                    natural_height: 0,
-                    pattern_width: 0,
-                    pattern_height: 0,
-                    ratio_wh: 0.0,
-                    z_index,
-                    use_pattern: false,
-                };
-                state.images.push(new_image);
+            Msg::AddImages(urls) => {
+                let mut x = 50;
+                let mut y = 50;
+                let mut index = state.images.len();
+
+                for url in urls.clone() {
+                    let z_index = state.next_z_index + 1;
+                    state.next_z_index = z_index;
+                    let new_image = ImageData {
+                        id: index.to_string(),
+                        url: url.clone(),
+                        x,
+                        y,
+                        width: 0,
+                        height: 0,
+                        natural_width: 0,
+                        natural_height: 0,
+                        pattern_width: 0,
+                        pattern_height: 0,
+                        ratio_wh: 0.0,
+                        z_index,
+                        use_pattern: false,
+                    };
+                    state.images.push(new_image);
+                    x += 30;
+                    y += 30;
+                    index += 1;
+                }
                 // let length = state.images.len();
                 // log!("Msg::AddImage", url.clone(), length);
             }

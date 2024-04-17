@@ -42,14 +42,16 @@ pub fn create(DropProps { children }: &DropProps) -> Html {
         node.clone(),
         UseDropOptions {
             onfiles: Some(Box::new(move |files, _data_transfer| {
-                // Process files or data_transfer
-                let file = &files[0];
-                let file_type = file.type_();
-                if file_type.contains("image") {
-                    let url = Url::create_object_url_with_blob(file).unwrap();
-                    let call = dispatch.apply_callback(move |_: ()| Msg::AddImage(url.clone()));
-                    call.emit(());
+                let mut urls = Vec::new();
+                for file in &files {
+                    let file_type = file.type_();
+                    if file_type.contains("image") {
+                        let url = Url::create_object_url_with_blob(file).unwrap();
+                        urls.push(url.clone());
+                    }
                 }
+                let call = dispatch.apply_callback(move |_: ()| Msg::AddImages(urls.clone()));
+                call.emit(());
             })),
             ..Default::default()
         },
