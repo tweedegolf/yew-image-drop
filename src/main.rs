@@ -2,16 +2,13 @@
 //!
 //! Simple app that allows you to drag and drop images onto the html page and position and scale them.
 
-use std::borrow::Borrow;
-
-use crate::app_state::{AppState, Msg};
+use crate::app_state::Msg;
 use crate::drag_and_drop::UseDrop;
+use crate::header::Header;
 use crate::images::Images;
-use crate::logger::Logger;
-use gloo_console::log;
 use yew::prelude::*;
 use yew_hooks::use_event_with_window;
-use yewdux::{use_dispatch, use_selector};
+use yewdux::use_dispatch;
 
 mod absolute_style;
 mod app_state;
@@ -19,6 +16,7 @@ mod bounding_box;
 mod drag_and_drop;
 mod handle;
 mod handle_id;
+mod header;
 mod image_container;
 mod images;
 mod logger;
@@ -30,15 +28,6 @@ mod scalable_image;
 #[function_component(App)]
 fn create() -> Html {
     let dispatch = use_dispatch();
-    let handle_id = use_selector(|state: &AppState| state.active_handle.clone());
-
-    // If the user drags a resize handle show the cursor that matches the resize direction
-    let style = if let Some(handle) = handle_id.borrow() {
-        let cursor = handle.get_cursor();
-        "cursor:".to_string() + &cursor + ";"
-    } else {
-        "".to_string()
-    };
 
     {
         let dis = dispatch.clone();
@@ -101,15 +90,13 @@ fn create() -> Html {
         });
     }
 
-    log!("render App");
+    // log!("render App");
 
     html! {
-      <div class="container" style={style}>
-        <h3>{ "drop an image below" }</h3>
-        <Logger />
-        <UseDrop />
-        <Images />
-      </div>
+      <UseDrop>
+          <Header />
+          <Images />
+      </UseDrop>
     }
 }
 
