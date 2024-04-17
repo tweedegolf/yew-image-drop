@@ -1,6 +1,6 @@
 use gloo_console::log;
 use wasm_bindgen::JsCast;
-use web_sys::HtmlInputElement;
+use web_sys::{HtmlInputElement, Url};
 use yew::{function_component, html, use_node_ref, Callback, Event, Html};
 use yewdux::use_dispatch;
 
@@ -15,15 +15,17 @@ pub fn create() -> Html {
     let on_change = dispatch.apply_callback(move |e: Event| {
         let target = e.target().unwrap();
         let input = target.dyn_ref::<HtmlInputElement>().unwrap();
-        log!(input.files());
-        Msg::None
-        // Msg::ImageLoaded(
-        //     id2.clone(),
-        //     w,
-        //     h,
-        //     img.natural_width() as i16,
-        //     img.natural_height() as i16,
-        // )
+
+        if let Some(file_list) = input.files() {
+            if let Some(file) = file_list.item(0) {
+                let url = Url::create_object_url_with_blob(&file).unwrap();
+                Msg::AddImage(url.clone())
+            } else {
+                Msg::None
+            }
+        } else {
+            Msg::None
+        }
     });
 
     let on_click = {
