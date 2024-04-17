@@ -1,6 +1,6 @@
 use crate::{
-    absolute_style::AbsoluteStyle, app_state::ImageData, handle_id::HandleId,
-    scalable_image::ScalableImage,
+    absolute_style::AbsoluteStyle, app_state::ImageData, components::scalable_image::ScalableImage,
+    handle_id::HandleId,
 };
 // use gloo_console::log;
 use yew::prelude::*;

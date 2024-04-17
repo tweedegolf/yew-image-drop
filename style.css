@@ -26,12 +26,27 @@ h3 {
   margin-left: 10px;
 }
 
+.file_input {
+  display: none;
+}
+
+.file-dialog-button {
+  margin: 0;
+  color: #00ff00;
+  font-family: monospace;
+  font-size: 15.21px;
+  font-weight: 700;
+  align-self: center;
+  cursor: pointer;
+}
+
 .logger {
   font-family: monospace;
   color: #00ff00;
   font-size: 13px;
   align-self: center;
   margin-right: 10px;
+  width: 100px;
 }
 
 .drop-area {

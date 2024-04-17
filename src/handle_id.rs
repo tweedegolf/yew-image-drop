@@ -1,8 +1,8 @@
 use std::fmt;
 use yew::{html, virtual_dom::VNode, Html};
 
-use crate::{bounding_box::BoundingBox, handle::Handle, position::Position};
-
+use crate::components::handle::Handle;
+use crate::{bounding_box::BoundingBox, position::Position};
 const HANDLE_SIZE: i16 = 10;
 
 /// This enum contains all resize handles for all 8 directions.

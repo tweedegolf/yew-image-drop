@@ -6,7 +6,7 @@ use yewdux::use_selector;
 
 use crate::{
     app_state::{AppState, ImageData},
-    image_container::ImageContainer,
+    components::image_container::ImageContainer,
 };
 
 /// Renders all dropped images
