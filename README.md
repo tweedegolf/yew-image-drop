@@ -67,3 +67,9 @@ Now the pointer move coordinates will be forwarded to the active handle which ca
 
    <video src="https://github.com/tweedegolf/yew-image-drop/assets/299669/5200aad9-3e08-4c1b-839a-a3b01e5b6c42" controls="controls" style="max-width: 730px;">
    </video>
+
+#### Resize pattern
+[yew-drop-5.webm](https://github.com/tweedegolf/yew-image-drop/assets/299669/a61d1293-1b4b-4a8b-b560-b54c550ad237)
+
+
+
