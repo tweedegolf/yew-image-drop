@@ -45,3 +45,24 @@ When a value is set for `active_image_index` the pointer move coordinates will b
 When you click on a handle its id will be stored in the store as `active_handle_id`. Also `active_image_index` will be set to the index of image that the handle belongs to.
 
 Now the pointer move coordinates will be forwarded to the active handle which causes the handle to recalculate its position and the size of the `ImageContainer` component.
+
+### Videos
+
+1. Add image(s) using drag and drop
+https://github.com/tweedegolf/yew-image-drop/assets/299669/7d6409a6-958c-4008-925f-d9bbf77e372b
+
+2. Add image(s) using the file menu
+https://github.com/tweedegolf/yew-image-drop/assets/299669/78378fb0-a2fa-4422-8b78-2a14c77681e3
+
+3. Create pattern
+https://github.com/tweedegolf/yew-image-drop/assets/299669/be766c8a-c576-4b65-85e3-eaa265637a72
+
+4. Change z-index of image by mouse down + `plus` or `minus` key
+https://github.com/tweedegolf/yew-image-drop/assets/299669/5200aad9-3e08-4c1b-839a-a3b01e5b6c42
+
+
+
+
+
+
+
