@@ -19,7 +19,7 @@ To create a pattern:
 2. resize the image to your liking; this is size and shape of the image that will be repeated
 3. resize the image while holding the `shift` key to create a surface with a pattern
 
-To adjust a pattern simply resize the image again.
+To adjust a pattern simply resize the image again. If you want to resize the size of the surface that displays your pattern you have to press the `shift` while dragging.
 
 Note that to bring an image to front or to back you sometimes have to press the `plus` or `minus` key multiple times because the z-index gets increased or decreased one level after at the time every key press.
 
