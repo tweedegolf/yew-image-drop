@@ -56,9 +56,9 @@ Now the pointer move coordinates will be forwarded to the active handle which ca
 
 <video src="https://github.com/tweedegolf/yew-image-drop/assets/299669/78378fb0-a2fa-4422-8b78-2a14c77681e3" controls="controls" style="max-width: 730px;"></video>
 
-#### Resize image with and without keeping the original ratio
+#### Resize image with and without keeping the original ratio by holding down the `ctrl` key
 
-[yew-drop-6.webm](https://github.com/tweedegolf/yew-image-drop/assets/299669/3b038d52-6c43-4a55-b41b-84203e6a73c1)
+[Resize image](https://github.com/tweedegolf/yew-image-drop/assets/299669/fa0e3e9f-e1a5-4d85-8c53-ee7fe31c72d2)
 
 #### Create pattern
 
