@@ -29,11 +29,18 @@ struct Data {
 /// Component that renders the image
 ///
 /// This component has 2 stages, in the first stage the image is added to the document with a class 'image' that
-/// constrains the size of the image, and an onload handler.
+/// constrains the size of the image by css, and an onload handler.
 ///
-/// Once the image is loaded, the onload handler dispatches the dimensions of the image to the store where the original width
+/// Once the image is loaded, the onload handler dispatches the dimensions of the image to the store where the natural width
 /// and the height of the image are stored. This triggers a rerender and then the component enters its 2nd stage where it
 /// is rendered with a fixed size and mouse handlers so that in this 2nd stage the image can be dragged around, resized and removed.
+///
+/// Because you can use an image to create a pattern as will, on the 2nd stage the image is rendered on a canvas. To be able to
+/// scale and rotate the pattern we need a SvgMatrix and to obtain an instance of such a matrix we add an otherwise unused SVG
+/// element to the document.
+///
+/// If you resize the image while holding down the `shift` key the pattern size will be set stored in the state, this also flips a
+/// boolean `use_pattern` so that when you release the `shift` key the pattern will be drawn to the canvas instead of the image
 #[function_component(ScalableImage)]
 pub fn create(ImageProps { data }: &ImageProps) -> Html {
     let ImageData {
@@ -57,42 +64,6 @@ pub fn create(ImageProps { data }: &ImageProps) -> Html {
     let shift_key_down: bool = *shift_key_down.borrow();
     let use_pattern = *use_pattern;
 
-    let on_load = {
-        let id2 = id.to_owned();
-        dispatch.apply_callback(move |e: Event| {
-            let target = e.target().unwrap();
-            let img = target.dyn_ref::<HtmlImageElement>().unwrap();
-            let rect: DomRect = img.get_bounding_client_rect();
-            let w = rect.width() as i16;
-            let h = rect.height() as i16;
-            Msg::ImageLoaded(
-                id2.clone(),
-                w,
-                h,
-                img.natural_width() as i16,
-                img.natural_height() as i16,
-            )
-        })
-    };
-
-    let on_pointer_down = {
-        let id = id.clone();
-        dispatch.apply_callback(move |e: MouseEvent| {
-            e.prevent_default();
-            let x = e.offset_x() as i16;
-            let y = e.offset_y() as i16;
-            Msg::SetActiveImage(id.clone(), x, y)
-        })
-    };
-
-    let on_remove_image = {
-        let id = id.clone();
-        dispatch.apply_callback(move |e: MouseEvent| {
-            e.stop_immediate_propagation();
-            Msg::RemoveImage(Some(id.clone()))
-        })
-    };
-
     let s_ref = svg_ref.clone();
     let i_ref = image_ref.clone();
     let c_ref = canvas_ref.clone();
@@ -105,7 +76,6 @@ pub fn create(ImageProps { data }: &ImageProps) -> Html {
         pattern_height: *pattern_height as f64,
         shift_key_down,
     };
-
     let create_canvas = move || {
         if let Some(canvas) = c_ref.cast::<HtmlCanvasElement>() {
             match canvas
@@ -178,13 +148,49 @@ pub fn create(ImageProps { data }: &ImageProps) -> Html {
         }
     };
 
+    let on_load = {
+        let id2 = id.to_owned();
+        dispatch.apply_callback(move |e: Event| {
+            let target = e.target().unwrap();
+            let img = target.dyn_ref::<HtmlImageElement>().unwrap();
+            let rect: DomRect = img.get_bounding_client_rect();
+            let w = rect.width() as i16;
+            let h = rect.height() as i16;
+            Msg::ImageLoaded(
+                id2.clone(),
+                w,
+                h,
+                img.natural_width() as i16,
+                img.natural_height() as i16,
+            )
+        })
+    };
+
+    let on_pointer_down = {
+        let id = id.clone();
+        dispatch.apply_callback(move |e: MouseEvent| {
+            e.prevent_default();
+            let x = e.offset_x() as i16;
+            let y = e.offset_y() as i16;
+            Msg::SetActiveImage(id.clone(), x, y)
+        })
+    };
+
+    let on_remove_image = {
+        let id = id.clone();
+        dispatch.apply_callback(move |e: MouseEvent| {
+            e.stop_immediate_propagation();
+            Msg::RemoveImage(Some(id.clone()))
+        })
+    };
+
     let data = (*width, *height, shift_key_down);
     let cc = create_canvas.clone();
     use_effect_with(data, move |_| {
         cc.borrow()();
     });
 
-    log!("render ScalableImage");
+    // log!("render ScalableImage");
 
     if *width == 0 && *height == 0 {
         html! {
@@ -202,8 +208,7 @@ pub fn create(ImageProps { data }: &ImageProps) -> Html {
                 ref={image_ref}
                 class="image-hidden"
                 src={url.to_string()}
-                onload={move |_e| create_canvas.borrow()()}
-            />
+                onload={move |_e| create_canvas.borrow()()}            />
             <canvas
                 ref={canvas_ref}
                 width={width.to_string()}

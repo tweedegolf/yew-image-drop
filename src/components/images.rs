@@ -1,6 +1,6 @@
 use std::borrow::Borrow;
 
-use gloo_console::log;
+// use gloo_console::log;
 use yew::{function_component, html, Html};
 use yewdux::use_selector;
 
@@ -15,7 +15,7 @@ pub fn create() -> Html {
     let images = use_selector(|state: &AppState| state.images.clone());
     let images: &Vec<ImageData> = images.borrow();
 
-    log!("render Images");
+    // log!("render Images");
 
     images
         .clone()

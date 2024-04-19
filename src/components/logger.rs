@@ -10,6 +10,7 @@ pub fn create() -> Html {
     let mouse = use_selector(|state: &AppState| state.mouse);
 
     // log!("render Logger");
+
     html! {
       <div class="logger">{mouse.to_string()}</div>
     }

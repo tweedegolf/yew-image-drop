@@ -40,9 +40,9 @@ As soon as you drop an image onto the page an `ImageData` struct is added to the
 
 #### Dragging an image
 
-When you click on an image its index in the `Images` vector will be stored in the store as `active_image_index`. Also the 'anchor' is stored in the struct of the `ImageData`; this is the position of the pointer down event relative to the image.
+When you click on an image its index in the `Images` vector will be stored in the store as `active_image_index`. Also the 'anchor' is stored in the struct of the `ImageData`; this is the position of the pointer down event relative to the position of the image.
 
-When a value is set for `active_image_index` the pointer move coordinates will be stored in the `ImageData` struct which triggers a rerender and thus move the image around.
+When a value is set for `active_image_index` the pointer move coordinates will be stored in the `ImageData` struct which triggers a rerender and thus moves the image around.
 
 #### Resizing an image
 

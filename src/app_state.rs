@@ -86,13 +86,13 @@ impl Reducer<AppState> for Msg {
                             img_data.pattern_width = bb.width;
                             img_data.pattern_height = bb.height;
                         }
-                        // log!("Msg::MouseMove bounding box", bb.to_string());
                     } else {
                         let img_data = &mut state.images[index];
                         img_data.x = x - state.anchor.x;
                         img_data.y = y - state.anchor.y;
-                        // log!("Msg::MouseMove position", img_data.x, img_data.y);
                     }
+                    // log!("Msg::MouseMove position", img_data.x, img_data.y);
+                    // log!("Msg::MouseMove bounding box", bb.to_string());
                 }
             }
             Msg::SetActiveImage(image_id, anchor_x, anchor_y) => {

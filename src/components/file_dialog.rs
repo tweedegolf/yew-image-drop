@@ -1,4 +1,4 @@
-use gloo_console::log;
+// use gloo_console::log;
 use wasm_bindgen::JsCast;
 use web_sys::{HtmlInputElement, Url};
 use yew::{function_component, html, use_node_ref, Callback, Event, Html};
@@ -38,7 +38,7 @@ pub fn create() -> Html {
         })
     };
 
-    log!("render FileDialog");
+    // log!("render FileDialog");
 
     html! {
       <>
