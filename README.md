@@ -50,11 +50,11 @@ Now the pointer move coordinates will be forwarded to the active handle which ca
 
 #### Add image(s) using drag and drop
 
-<video src="https://github.com/tweedegolf/yew-image-drop/assets/299669/7d6409a6-958c-4008-925f-d9bbf77e372b" controls="controls" style="max-width: 730px;"></video>
+[Add image drag and drop](https://github.com/tweedegolf/yew-image-drop/assets/299669/7d6409a6-958c-4008-925f-d9bbf77e372b)
 
 #### Add image(s) using the file menu
 
-<video src="https://github.com/tweedegolf/yew-image-drop/assets/299669/78378fb0-a2fa-4422-8b78-2a14c77681e3" controls="controls" style="max-width: 730px;"></video>
+[Add image file menu](https://github.com/tweedegolf/yew-image-drop/assets/299669/78378fb0-a2fa-4422-8b78-2a14c77681e3)
 
 #### Resize image with and without keeping the original ratio by holding down the `ctrl` key
 
@@ -62,12 +62,12 @@ Now the pointer move coordinates will be forwarded to the active handle which ca
 
 #### Create pattern
 
-<video src="https://github.com/tweedegolf/yew-image-drop/assets/299669/be766c8a-c576-4b65-85e3-eaa265637a72" controls="controls" style="max-width: 730px;"></video>
+[Create pattern](https://github.com/tweedegolf/yew-image-drop/assets/299669/be766c8a-c576-4b65-85e3-eaa265637a72)
 
 #### Change z-index of image by mouse down + `plus` or `minus` key
 
-<video src="https://github.com/tweedegolf/yew-image-drop/assets/299669/5200aad9-3e08-4c1b-839a-a3b01e5b6c42" controls="controls" style="max-width: 730px;"></video>
+[Change z-index](https://github.com/tweedegolf/yew-image-drop/assets/299669/5200aad9-3e08-4c1b-839a-a3b01e5b6c42)
 
 #### Resize pattern
 
-[yew-drop-5.webm](https://github.com/tweedegolf/yew-image-drop/assets/299669/a61d1293-1b4b-4a8b-b560-b54c550ad237)
+[Resize pattern](https://github.com/tweedegolf/yew-image-drop/assets/299669/a61d1293-1b4b-4a8b-b560-b54c550ad237)
