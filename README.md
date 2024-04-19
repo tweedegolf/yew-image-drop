@@ -1,16 +1,16 @@
 # Yew Image Drop
 
-A simple sample application using [Yew](https://yew.rs/) and the `use_drop` hook from [yew-hooks](https://docs.rs/yew-hooks/latest/yew_hooks/index.html) and [yewdux](https://github.com/intendednull/yewdux) for state management.
+A simple sample application using [Yew](https://yew.rs/), the `use_drop` hook from [yew-hooks](https://docs.rs/yew-hooks/latest/yew_hooks/index.html) and [yewdux](https://github.com/intendednull/yewdux) for state management.
 
-You can drop images onto the page and drag and resize the images afterwards. Every image gets a resize handle for every resize direction, eight in total.
+You can drop images onto the page and reposition and resize the images afterwards. Every image gets a resize handle for every resize direction, eight in total. You can also create background patterns.
 
-&rarr;&rarr;&rarr;[Live example](https://tweedegolf.github.io/yew-image-drop/)&larr;&larr;&larr;
+<b>&#8614;</b> [Live example](https://tweedegolf.github.io/yew-image-drop/) <b>&mapstoleft;</b>
 
 - resize image &rarr; drag any handle
 - resize image while keeping the ratio &rarr; drag any handle + `ctrl` key
 - remove image &rarr; double click on an image or mouse down + `delete` key
-- bring to front &rarr; mouse down + `plus` key
-- bring to back &rarr; mouse down + `minus` key
+- increase z-index (bring to front) &rarr; mouse down + `plus` key
+- decrease z-index (bring to back) &rarr; mouse down + `minus` key
 - create a pattern &rarr; hold `shift` key while dragging a resize handler
 
 To create a pattern:
@@ -20,6 +20,10 @@ To create a pattern:
 3. resize the image while holding the `shift` key to create a surface with a pattern
 
 To adjust a pattern simply resize the image again.
+
+Note that to bring an image to front or to back you sometimes have to press the `plus` or `minus` key multiple times because the z-index gets increased or decreased one level after at the time every key press.
+
+See the [videos](#videos) below <b>&mapstodown;</b>
 
 ## How it works
 
